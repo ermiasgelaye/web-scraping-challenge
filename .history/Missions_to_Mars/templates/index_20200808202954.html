@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <title>Mission to Mars</title>
+
+</head>
+
+<body class="text-white" style="background-color:black;">
+  <div class="custom-container container-fluid">
+    <div class="row justify-content-around">
+      <div class="col-md-12 text-center">
+        <h1><b>Mission to Mars</b></h1>
+        <br>
+        <a class="btn btn-primary" href="/scrape" role="button">Scrape New Data</a>
+      </div>
+    </div>
+    <br>
+    <div class="row justify-content-around">
+      <h2>{{mars[0]['News Title']}}</h2>
+      <p>{{mars[0]['News Paragraph']}}</p>
+    </div>
+    <br>
+    <div class="row justify-content-around">
+      <div class="col-md-7 h-100">
+        <h4>Featured Mars Image</h4>
+        <br>
+        <img class="img-fluid max-width: 100%; height: auto;" src="{{mars[0]['Featured Image']}}"
+          alt="featured mars image">
+      </div>
+      <div class="col-md-4">
+        <div class="row">
+          <div class="col-md-12">
+            <h4>Latest Mars Weather</h4>
+            {{mars[0]['Mars Weather']}}
+          </div>
+        </div>
+        <br>
+        <h4>Mars Facts</h4>
+        {{mars[0]['Mars Facts']|safe}}
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-md-12">
+        <h4>Mars Hemispheres</h4>
+      </div>
+    </div>
+    <div class="row justify-content-around">
+      {% for image in mars[0]['Mars Hemisphere Images']%}
+      <div class="col-md-6" id="columnpad">
+        <img class="img-fluid max-width: 100%; height: auto;" src="{{image.img_url}}" alt="mars hemisphere image">
+        <div>
+          <h5>{{image.title}}</h5>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

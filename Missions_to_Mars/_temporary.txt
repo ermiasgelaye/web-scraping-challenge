@@ -1,0 +1,37 @@
+<li class="slide">
+ <div class="image_and_description_container">
+  <a href="/news/8731/nasas-maven-observes-martian-night-sky-pulsing-in-ultraviolet-light/" target="_self">
+   <div class="rollover_description">
+    <div class="rollover_description_inner">
+     Vast areas of the Martian night sky pulse in ultraviolet light, according to images from NASA’s MAVEN spacecraft. The results are being used to illuminate complex circulation patterns in the Martian atmosphere.
+    </div>
+    <div class="overlay_arrow">
+     <img alt="More" src="/assets/overlay-arrow.png"/>
+    </div>
+   </div>
+   <div class="list_image">
+    <img alt="ultraviolet “nightglow” in the Martian atmosphere" src="/system/news_items/list_view_images/8731_MAVEN_nightglow_pulsating_spot-320x240.jpg"/>
+   </div>
+   <div class="bottom_gradient">
+    <div>
+     <h3>
+      NASA's MAVEN Observes Martian Night Sky Pulsing in Ultraviolet Light
+     </h3>
+    </div>
+   </div>
+  </a>
+  <div class="list_text">
+   <div class="list_date">
+    August  6, 2020
+   </div>
+   <div class="content_title">
+    <a href="/news/8731/nasas-maven-observes-martian-night-sky-pulsing-in-ultraviolet-light/" target="_self">
+     NASA's MAVEN Observes Martian Night Sky Pulsing in Ultraviolet Light
+    </a>
+   </div>
+   <div class="article_teaser_body">
+    Vast areas of the Martian night sky pulse in ultraviolet light, according to images from NASA’s MAVEN spacecraft. The results are being used to illuminate complex circulation patterns in the Martian atmosphere.
+   </div>
+  </div>
+ </div>
+</li>
