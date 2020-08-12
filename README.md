@@ -100,6 +100,7 @@ The output looks as follows:
 </table>
 
 ### HTML
+```
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -150,72 +151,29 @@ The output looks as follows:
     </tr>
   </tbody>
 </table>
-
+```
 
 ### Mars Hemispheres
 
-* Visit the USGS Astrogeology site [here](https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars) to obtain high resolution images for each of Mar's hemispheres.
+* I visited the USGS Astrogeology site [here](https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars), and  obtained high resolution images for each of Mar's hemispheres.
 
-* You will need to click each of the links to the hemispheres in order to find the image url to the full resolution image.
-
-* Save both the image url string for the full resolution hemisphere image, and the Hemisphere title containing the hemisphere name. Use a Python dictionary to store the data using the keys `img_url` and `title`.
-
-* Append the dictionary with the image url string and the hemisphere title to a list. This list will contain one dictionary for each hemisphere.
-
-
-
-
-
-
-```python
-# Example:
-hemisphere_image_urls = [
-    {"title": "Valles Marineris Hemisphere", "img_url": "..."},
-    {"title": "Cerberus Hemisphere", "img_url": "..."},
-    {"title": "Schiaparelli Hemisphere", "img_url": "..."},
-    {"title": "Syrtis Major Hemisphere", "img_url": "..."},
-]
-```
-
-- - -
+* I clicked each of the links to the hemispheres in order to find the image url to the full resolution image. Then, I saved both the image url string for the full resolution hemisphere image, and the Hemisphere title containing the hemisphere name, and stored in the a Python dictionary by using the keys `img_url` and `title`.
 
 ## Step 2 - MongoDB and Flask Application
 
-Use MongoDB with Flask templating to create a new HTML page that displays all of the information that was scraped from the URLs above.
+I used MongoDB with Flask templating to create a new HTML page that displays all of the information that was scraped from the URLs. Then after, I converted the Jupyter notebook into a Python script called [mssion_to_mars.ipynb](Missions_to_Mars/mssion_to_mars.ipynb) with a function called `scrape` that will execute all of the scraping code from above and return one Python dictionary containing all of the scraped data.
 
-* Start by converting your Jupyter notebook into a Python script called `scrape_mars.py` with a function called `scrape` that will execute all of your scraping code from above and return one Python dictionary containing all of the scraped data.
+* Next, I created a route called `/scrape` that will import [scrape_mars.py](Missions_to_Mars/scrape_mars.py) script and call `scrape` function.
 
-* Next, create a route called `/scrape` that will import your `scrape_mars.py` script and call your `scrape` function.
+  * I stored the returned values in Mongo as a Python dictionary.
 
-  * Store the return value in Mongo as a Python dictionary.
+* I created a root route `/` that will query the Mongo database and pass the mars data into an HTML template to display the data.
 
-* Create a root route `/` that will query your Mongo database and pass the mars data into an HTML template to display the data.
-
-* Create a template HTML file called `index.html` that will take the mars data dictionary and display all of the data in the appropriate HTML elements. Use the following as a guide for what the final product should look like, but feel free to create your own design.
+* Finally, I created a template HTML file called [index.html](/Missions_to_Mars/templates/index.html) that take the mars data dictionary, and displayed all of the data in the appropriate HTML elements. The final display looks as followed:
 
 ![final_app_part1.png](Images/final_app_part1.png)
 ![final_app_part2.png](Images/final_app_part2.png)
 
-- - -
-
-## Step 3 - Submission
-
-To submit your work to BootCampSpot, create a new GitHub repository and upload the following:
-
-1. The Jupyter Notebook containing the scraping code used.
-
-2. Screenshots of your final application.
-
-3. Submit the link to your new repository to BootCampSpot.
-
-## Hints
-
-* Use Splinter to navigate the sites when needed and BeautifulSoup to help find and parse out the necessary data.
-
-* Use Pymongo for CRUD applications for your database. For this homework, you can simply overwrite the existing document each time the `/scrape` url is visited and new data is obtained.
-
-* Use Bootstrap to structure your HTML template.
-
 ### Copyright
 
-Trilogy Education Services © 2019. All Rights Reserved.
+Trilogy Education Services © 2020. All Rights Reserved.
