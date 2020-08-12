@@ -44,21 +44,18 @@ def scrape():
     soup = bs(html, 'html.parser')
 
     featured_image_url = base_url + soup.find('a',class_='button fancybox')['data-fancybox-href']    
-    # Mars Weather
-    mars_weather = []
-    url = 'https://twitter.com/marswxreport?lang=en'
 
+    # Mars Weather
+    url = 'https://twitter.com/marswxreport?lang=en'
     browser.visit(url)
     time.sleep(3)
-
     weather_html = browser.html
-
     soup = bs(weather_html, "html.parser")
     # print(weathersoup.prettify())
 
-    mars_tweets = [soup.find_all('p', class_="TweetTextSize"), soup.find_all(
-        'span', class_="css-901oao css-16my406 r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0")]
-
+    mars_tweets = [soup.find_all('p', class_="TweetTextSize"), soup.find_all('span', class_="css-901oao css-16my406 r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0")]
+    
+    mars_weather=[]
     for tweets in mars_tweets:
         mars_tweet = tweets
 
@@ -67,7 +64,8 @@ def scrape():
             mars_weather = tweet.text
             if tweet.a in tweet:
                 mars_weather = mars_weather.strip(tweet.a.text)
-            break
+        break
+    
 
     # Mars facts
     url = 'https://space-facts.com/mars/'

@@ -44,8 +44,8 @@ def scrape():
     soup = bs(html, 'html.parser')
 
     featured_image_url = base_url + soup.find('a',class_='button fancybox')['data-fancybox-href']    
-    # Mars Weather
-    mars_weather = []
+
+    # Mars Weathe
     url = 'https://twitter.com/marswxreport?lang=en'
 
     browser.visit(url)

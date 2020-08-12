@@ -66,7 +66,7 @@ def scrape():
         if 'InSight' in tweet.text:
             mars_weather = tweet.text
             if tweet.a in tweet:
-                mars_weather = mars_weather.strip(tweet.a.text)
+                mars_weather = mmars_weather.strip(tweet.a.text)
             break
 
     # Mars facts
