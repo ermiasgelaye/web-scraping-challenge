@@ -33,6 +33,7 @@ https://www.jpl.nasa.gov/spaceimages/images/mediumsize/PIA19346_ip.jpg
 * I Visited the Mars Weather twitter account [here](https://twitter.com/marswxreport?lang=en), and scraped the latest Mars weather tweet from the page.Then, I saved the tweet text for the weather report as a variable called `mars_weather`.
 
 The output looks as follows:
+
 ```python
 InSight sol 607 (2020-08-11) low -93.1ºC (-135.6ºF) high -18.9ºC (-2.1ºF)
 winds from the WNW at 8.2 m/s (18.4 mph) gusting to 21.4 m/s (47.8 mph)
@@ -98,9 +99,7 @@ The output looks as follows:
   </tbody>
 </table>
 
-
-
-```HTML
+### HTML
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -151,7 +150,7 @@ The output looks as follows:
     </tr>
   </tbody>
 </table>
-```
+
 
 ### Mars Hemispheres
 
