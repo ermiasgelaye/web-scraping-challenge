@@ -3,7 +3,7 @@
 
 In this Project, I build a web application that scrapes various websites for data related to the Mission to Mars and displayed the information in a single HTML page.
 
-![mission_to_mars](https://giphy.com/gifs/XbZiJ7Hd8JAg9DOWho/html5)
+![mission_to_mars](Images/missiontomars.gif)
 
 ## Step 1 - Scraping
 
