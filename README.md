@@ -1,9 +1,12 @@
 # Web Scraping - Mission to Mars
+
 ## Background 
+
+Mars is the fourth planet from the Sun and the second-smallest planet in the Solar System, being only larger than Mercury. In English, Mars carries the name of the Roman god of war and is often referred to as the "Red Planet".
 
 In this Project, I build a web application that scrapes various websites for data related to the Mission to Mars and displayed the information in a single HTML page.
 
-![mission_to_mars](Images/missiontomars.gif)
+![mission_to_mars](Images/mission_to_mars.png)
 
 ## Step 1 - Scraping
 
