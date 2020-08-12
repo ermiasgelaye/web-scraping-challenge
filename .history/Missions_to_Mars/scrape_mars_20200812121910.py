@@ -49,7 +49,7 @@ def scrape():
     url = 'https://twitter.com/marswxreport?lang=en'
 
     browser.visit(url)
-    time.sleep(10)
+    time.sleep(5)
 
     weather_html = browser.html
 

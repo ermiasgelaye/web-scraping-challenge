@@ -49,7 +49,7 @@ def scrape():
     url = 'https://twitter.com/marswxreport?lang=en'
 
     browser.visit(url)
-    time.sleep(10)
+    time.sleep(3)
 
     weather_html = browser.html
 
@@ -66,7 +66,7 @@ def scrape():
         if 'InSight' in tweet.text:
             mars_weather = tweet.text
             if tweet.a in tweet:
-                mars_weather = mars_weather.strip(tweet.a.text)
+                mars_weather = m.strip(tweet.a.text)
             break
 
     # Mars facts
