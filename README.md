@@ -14,7 +14,7 @@ The initial scraping is conducted by using Jupyter Notebook, BeautifulSoup, Pand
 
 ### NASA Mars News
 
-* I scraped the [NASA Mars News Site](/mars.nasa.gov/news/) and collected the latest News Title and Paragraph Text. The result looks as follows:
+* I scraped the [NASA Mars News Site](mars.nasa.gov/news) and collected the latest News Title and Paragraph Text. The result looks as follows:
 
 ```python
 Title:  NASA's MAVEN Observes Martian Night Sky Pulsing in Ultraviolet Light
