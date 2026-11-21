@@ -1,131 +1,115 @@
-from splinter import Browser
-from bs4 import BeautifulSoup as bs
-import pandas as pd
+"""Scrape the latest Mars news, images, weather, facts and hemisphere images.
+
+Each section is scraped independently: if one source is unavailable or has
+changed its layout, that section is left empty and the others still load.
+"""
+import logging
 import time
-import re
 
-# This is for debugging
+import pandas as pd
+from bs4 import BeautifulSoup
+from splinter import Browser
 
-def savetofile(contents):
-    file = open('_temporary.txt',"w",encoding="utf-8")
-    file.write(contents)
-    file.close()
+log = logging.getLogger(__name__)
+
+NEWS_URL = "https://mars.nasa.gov/news/"
+JPL_BASE_URL = "https://www.jpl.nasa.gov"
+JPL_IMAGES_URL = JPL_BASE_URL + "/spaceimages/?search=&category=Mars"
+WEATHER_URL = "https://twitter.com/marswxreport?lang=en"
+FACTS_URL = "https://space-facts.com/mars/"
+USGS_BASE_URL = "https://astrogeology.usgs.gov"
+HEMISPHERES_URL = USGS_BASE_URL + "/search/results?q=hemisphere+enhanced&k1=target&v1=Mars"
 
 
-def scrape():
-    executable_path = {"executable_path": "chromedriver"}
-    browser = Browser("chrome", **executable_path, headless=False)
-
-    # NASA Mars News
-
-    url = 'https://mars.nasa.gov/news/'
-
+def get_soup(browser, url, wait=1):
+    """Visit a page, give its JavaScript time to render, and parse it."""
     browser.visit(url)
-    time.sleep(3)
+    time.sleep(wait)
+    return BeautifulSoup(browser.html, "html.parser")
 
-    html = browser.html
-    soup = bs(html, 'html.parser')
 
-    slides = soup.find_all('li', class_='slide')
-    content_title = slides[0].find('div', class_='content_title')
-    news_title = content_title.text.strip()
+def scrape_news(browser):
+    """Return (title, teaser) of the latest NASA Mars news article."""
+    soup = get_soup(browser, NEWS_URL, wait=3)
+    slide = soup.find("li", class_="slide")
+    title = slide.find("div", class_="content_title").text.strip()
+    teaser = slide.find("div", class_="article_teaser_body").text.strip()
+    return title, teaser
 
-    article_teaser_body = slides[0].find('div', class_='article_teaser_body')
-    news_p = article_teaser_body.text.strip()
 
-    # JPL Mars Space Images
+def scrape_featured_image(browser):
+    """Return the full-size URL of JPL's featured Mars image."""
+    soup = get_soup(browser, JPL_IMAGES_URL)
+    return JPL_BASE_URL + soup.find("a", class_="button fancybox")["data-fancybox-href"]
 
-    base_url = 'https://www.jpl.nasa.gov'
-    url = base_url + '/spaceimages/?search=&category=Mars'
 
-    browser.visit(url)
-    time.sleep(1)
-    html = browser.html
-    soup = bs(html, 'html.parser')
+def scrape_weather(browser):
+    """Return the text of the latest InSight weather tweet."""
+    soup = get_soup(browser, WEATHER_URL, wait=10)
+    # Twitter has used both markups for tweet text
+    candidates = soup.find_all("p", class_="TweetTextSize") or soup.find_all(
+        "span", class_="css-901oao css-16my406 r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0"
+    )
+    for tweet in candidates:
+        if "InSight" in tweet.text:
+            text = tweet.text
+            if tweet.a is not None:  # drop the trailing pic.twitter.com link
+                text = text.replace(tweet.a.text, "")
+            return text.strip()
+    return ""
 
-    featured_image_url = base_url + soup.find('a',class_='button fancybox')['data-fancybox-href']    
-    # Mars Weather
-    mars_weather = []
-    url = 'https://twitter.com/marswxreport?lang=en'
 
-    browser.visit(url)
-    time.sleep(10)
+def scrape_facts():
+    """Return the Mars facts table as an HTML string."""
+    for df in pd.read_html(FACTS_URL):
+        if df.shape[1] >= 2:
+            df = df.iloc[:, :2]
+            df.columns = ["Description", "Value"]
+            return df.set_index("Description").to_html(classes="table table-striped").replace("\n", "")
+    return ""
 
-    weather_html = browser.html
 
-    soup = bs(weather_html, "html.parser")
-    # print(weathersoup.prettify())
+def scrape_hemispheres(browser):
+    """Return [{'title': ..., 'img_url': ...}] for the four Mars hemispheres."""
+    soup = get_soup(browser, HEMISPHERES_URL)
+    pages = [
+        (item.find("h3").text.strip(), USGS_BASE_URL + item.find("a")["href"])
+        for item in soup.find_all("div", class_="item")
+    ]
 
-    mars_tweets = [soup.find_all('p', class_="TweetTextSize"), soup.find_all(
-        'span', class_="css-901oao css-16my406 r-1qd0xha r-ad9z0x r-bcqeeo r-qvutc0")]
+    hemispheres = []
+    for title, page_url in pages:
+        page = get_soup(browser, page_url)
+        img_url = USGS_BASE_URL + page.find("img", class_="wide-image")["src"]
+        hemispheres.append({"title": title, "img_url": img_url})
+    return hemispheres
 
-    for tweets in mars_tweets:
-        mars_tweet = tweets
 
-    for tweet in mars_tweet:
-        if 'InSight' in tweet.text:
-            mars_weather = tweet.text
-            if tweet.a in tweet:
-                mars_weather = mars_weather.strip(tweet.a.text)
-            break
+def _safely(section, func, default):
+    """Run one scraping step; log and return a default if the source fails."""
+    try:
+        return func()
+    except Exception as exc:  # a source changing its layout should not stop the others
+        log.warning("Could not scrape %s: %s", section, exc)
+        return default
 
-    # Mars facts
-    url = 'https://space-facts.com/mars/'
-    browser.visit(url)  # not necessary, but added for checking the operation
-    time.sleep(1)
 
-    dfs = pd.read_html(url)
-    for df in dfs:
-        try:
-            df = df.rename(columns={0: "Description", 1: "Value"})
-            df = df.set_index("Description")
-            marsfacts_html = df.to_html().replace('\n', '')
-            # df.to_html('marsfacts.html') # to save to a file to test
-            break
-        except:
-            continue
-        
-    # Mars Hemispheres
+def scrape(headless=True):
+    """Scrape every source and return one document for MongoDB."""
+    with Browser("chrome", headless=headless) as browser:
+        news_title, news_p = _safely("news", lambda: scrape_news(browser), ("", ""))
+        return {
+            "news_title": news_title,
+            "news_p": news_p,
+            "featured_image_url": _safely("featured image", lambda: scrape_featured_image(browser), ""),
+            "mars_weather": _safely("weather", lambda: scrape_weather(browser), ""),
+            "marsfacts_html": _safely("facts", scrape_facts, ""),
+            "hemisphere_image_urls": _safely("hemispheres", lambda: scrape_hemispheres(browser), []),
+        }
 
-    base_url = 'https://astrogeology.usgs.gov'
-    url = base_url + '/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
 
-    browser.visit(url)
-    time.sleep(1)
-    html = browser.html
-    soup = bs(html, 'html.parser')
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    from pprint import pprint
 
-    items = soup.find_all('div', class_='item')
-
-    urls = []
-    titles = []
-    for item in items:
-        urls.append(base_url + item.find('a')['href'])
-        titles.append(item.find('h3').text.strip())
-
-    img_urls = []
-    for oneurl in urls:
-        browser.visit(oneurl)
-        time.sleep(1)
-        html = browser.html
-        soup = bs(html, 'html.parser')
-        oneurl = base_url+soup.find('img',class_='wide-image')['src']
-        img_urls.append(oneurl)
-
-    hemisphere_image_urls = []
-
-    for i in range(len(titles)):
-        hemisphere_image_urls.append({'title':titles[i],'img_url':img_urls[i]})
-
-    # Assigning scraped data to a page
-    
-    marspage = {}
-    marspage["news_title"] = news_title
-    marspage["news_p"] = news_p
-    marspage["featured_image_url"] = featured_image_url
-    marspage["mars_weather"] = mars_weather
-    marspage["marsfacts_html"] = marsfacts_html
-    marspage["hemisphere_image_urls"] = hemisphere_image_urls
-
-    return marspage
-    
+    pprint(scrape())
