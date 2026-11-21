@@ -1,0 +1,9 @@
+flask>=3.0
+flask-pymongo>=2.3
+pymongo>=4.0
+splinter>=0.21
+selenium>=4.10
+beautifulsoup4>=4.12
+pandas>=2.0
+lxml>=4.9
+jupyter
