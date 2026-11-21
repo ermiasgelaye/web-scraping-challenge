@@ -5,6 +5,7 @@ changed its layout, that section is left empty and the others still load.
 """
 import logging
 import time
+from io import StringIO
 
 import pandas as pd
 from bs4 import BeautifulSoup
@@ -59,9 +60,10 @@ def scrape_weather(browser):
     return ""
 
 
-def scrape_facts():
+def scrape_facts(browser):
     """Return the Mars facts table as an HTML string."""
-    for df in pd.read_html(FACTS_URL):
+    browser.visit(FACTS_URL)
+    for df in pd.read_html(StringIO(browser.html)):
         if df.shape[1] >= 2:
             df = df.iloc[:, :2]
             df.columns = ["Description", "Value"]
@@ -103,7 +105,7 @@ def scrape(headless=True):
             "news_p": news_p,
             "featured_image_url": _safely("featured image", lambda: scrape_featured_image(browser), ""),
             "mars_weather": _safely("weather", lambda: scrape_weather(browser), ""),
-            "marsfacts_html": _safely("facts", scrape_facts, ""),
+            "marsfacts_html": _safely("facts", lambda: scrape_facts(browser), ""),
             "hemisphere_image_urls": _safely("hemispheres", lambda: scrape_hemispheres(browser), []),
         }
 
