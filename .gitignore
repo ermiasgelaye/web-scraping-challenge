@@ -12,3 +12,6 @@ node_modules/
 # Secrets
 .env
 config.py
+# Editor
+.history/
+.vscode/
